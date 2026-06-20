@@ -911,25 +911,46 @@ export default function Home() {
                         {e.location ? ` · ${e.location}` : ""}
                       </p>
 
-                      {/* Milestone image (SSB photo, school, etc.) */}
-                      {e.image && (
-                        <div className="relative mt-4 overflow-hidden rounded-xl border border-white/10">
-                          <img
-                            src={e.image}
-                            alt={`${e.title} — ${e.subtitle}`}
-                            loading="lazy"
-                            className="block w-full"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e16] via-transparent to-transparent" />
-                          {e.imageCaption && (
-                            <span
-                              className={`absolute bottom-3 left-3 rounded-full px-3 py-1 text-xs font-bold ${accent.solid}`}
-                            >
-                              {e.imageCaption}
-                            </span>
-                          )}
-                        </div>
-                      )}
+                      {/* Milestone image */}
+                      {e.image &&
+                        (e.kind === "defense" ? (
+                          // Full photo (AFCAT / SSB)
+                          <div className="relative mt-4 overflow-hidden rounded-xl border border-white/10">
+                            <img
+                              src={e.image}
+                              alt={`${e.title} — ${e.subtitle}`}
+                              loading="lazy"
+                              className="block w-full"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e16] via-transparent to-transparent" />
+                            {e.imageCaption && (
+                              <span
+                                className={`absolute bottom-3 left-3 rounded-full px-3 py-1 text-xs font-bold ${accent.solid}`}
+                              >
+                                {e.imageCaption}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          // Small logo for school / college / company
+                          <div className="mt-4 flex items-center gap-3">
+                            <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border border-white/10 bg-white sm:h-20 sm:w-20">
+                              <img
+                                src={e.image}
+                                alt={`${e.title} logo`}
+                                loading="lazy"
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                            {e.imageCaption && (
+                              <span
+                                className={`rounded-full border px-3 py-1 text-xs font-medium ${accent.chip}`}
+                              >
+                                {e.imageCaption}
+                              </span>
+                            )}
+                          </div>
+                        ))}
 
                       <p className="mt-3 text-muted-foreground">{e.description}</p>
 
