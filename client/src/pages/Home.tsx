@@ -12,7 +12,6 @@ import {
   ExternalLink,
   Code2,
   Briefcase,
-  BookOpen,
   ArrowRight,
   ArrowUpRight,
   Phone,
@@ -88,9 +87,66 @@ const FACTS = [
   { icon: Code2, label: "Also", value: "Competitive programming" },
 ];
 
-const STACK = [
-  "Node.js", "React", "Express", "MongoDB", "PostgreSQL", "Python",
-  "OpenCV", "Redis", "WebRTC", "Java", "C++", "TailwindCSS", "Git", "Linux",
+/** A technology with a locally-hosted Devicon brand logo (client/public/tech/*.svg).
+ *  `light` flags logos that are dark/monochrome and need a light tile to stay visible. */
+type Tech = { name: string; file: string; light?: boolean };
+
+const TECH: Tech[] = [
+  { name: "React", file: "react" },
+  { name: "Node.js", file: "nodejs" },
+  { name: "Express", file: "express", light: true },
+  { name: "MongoDB", file: "mongodb" },
+  { name: "PostgreSQL", file: "postgresql" },
+  { name: "MySQL", file: "mysql" },
+  { name: "Redis", file: "redis" },
+  { name: "Python", file: "python" },
+  { name: "JavaScript", file: "javascript" },
+  { name: "Java", file: "java" },
+  { name: "C++", file: "cplusplus" },
+  { name: "C", file: "c" },
+  { name: "Tailwind", file: "tailwindcss" },
+  { name: "Redux", file: "redux" },
+  { name: "Bootstrap", file: "bootstrap" },
+  { name: "OpenCV", file: "opencv" },
+  { name: "Git", file: "git" },
+  { name: "Linux", file: "linux" },
+  { name: "VS Code", file: "vscode" },
+];
+
+/** Rows of decreasing width — rendered as a centered "tech pyramid". */
+const TECH_PYRAMID: Tech[][] = [
+  [
+    { name: "Python", file: "python" },
+    { name: "JavaScript", file: "javascript" },
+    { name: "Java", file: "java" },
+    { name: "C++", file: "cplusplus" },
+    { name: "C", file: "c" },
+    { name: "HTML", file: "html5" },
+  ],
+  [
+    { name: "CSS", file: "css3" },
+    { name: "React", file: "react" },
+    { name: "Node.js", file: "nodejs" },
+    { name: "Express", file: "express", light: true },
+    { name: "Tailwind", file: "tailwindcss" },
+  ],
+  [
+    { name: "Redux", file: "redux" },
+    { name: "Bootstrap", file: "bootstrap" },
+    { name: "MongoDB", file: "mongodb" },
+    { name: "PostgreSQL", file: "postgresql" },
+    { name: "MySQL", file: "mysql" },
+  ],
+  [
+    { name: "Redis", file: "redis" },
+    { name: "OpenCV", file: "opencv" },
+    { name: "Git", file: "git" },
+    { name: "GitHub", file: "github", light: true },
+  ],
+  [
+    { name: "Linux", file: "linux" },
+    { name: "VS Code", file: "vscode" },
+  ],
 ];
 
 type JourneyKind = "education" | "defense" | "work";
@@ -233,12 +289,6 @@ const PROJECT_COVERS = [
   "radial-gradient(120% 120% at 100% 0%, #155e75 0%, #0a0e16 55%), linear-gradient(120deg, #164e63, #0a0e16)",
   "radial-gradient(120% 120% at 0% 100%, #9a3412 0%, #0a0e16 55%), linear-gradient(120deg, #7c2d12, #0a0e16)",
   "radial-gradient(120% 120% at 100% 100%, #3730a3 0%, #0a0e16 55%), linear-gradient(120deg, #312e81, #0a0e16)",
-];
-
-const SKILLS = [
-  { title: "Languages", icon: Code2, items: ["Java", "C", "C++", "JavaScript", "Python", "SQL (MySQL)"] },
-  { title: "Libraries & Frameworks", icon: BookOpen, items: ["React", "Axios", "Redux", "Bootstrap", "TailwindCSS"] },
-  { title: "Tools & Platforms", icon: Briefcase, items: ["Git", "VS Code", "Vercel", "Linux"] },
 ];
 
 const ACHIEVEMENTS = [
@@ -612,16 +662,24 @@ export default function Home() {
         </Reveal>
       </section>
 
-      {/* ---------------- Stack marquee ---------------- */}
+      {/* ---------------- Tech logo marquee ---------------- */}
       <section className="py-8">
         <Marquee className="py-2">
-          {STACK.map((tech) => (
-            <span
-              key={tech}
-              className="cursor-grow rounded-full border border-white/10 bg-white/5 px-5 py-2 font-mono text-sm text-muted-foreground transition-colors hover:border-teal-400/40 hover:text-teal-200"
+          {TECH.map((t) => (
+            <div
+              key={t.name}
+              title={t.name}
+              className={`mx-1.5 grid h-16 w-16 shrink-0 place-items-center rounded-2xl border border-white/10 p-3.5 transition-all duration-300 hover:-translate-y-1 hover:border-teal-400/40 hover:shadow-[0_10px_30px_-8px_rgba(45,212,191,0.5)] ${
+                t.light ? "bg-white" : "bg-white/[0.06]"
+              }`}
             >
-              {tech}
-            </span>
+              <img
+                src={`/tech/${t.file}.svg`}
+                alt={t.name}
+                loading="lazy"
+                className="h-full w-full object-contain"
+              />
+            </div>
           ))}
         </Marquee>
       </section>
@@ -894,27 +952,12 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <SectionHeading kicker="04 — Toolkit" title="Skills & technologies" />
 
-          <Reveal stagger={0.1} className="mt-12 grid gap-6 md:grid-cols-3">
-            {SKILLS.map((group) => (
-              <RevealItem key={group.title}>
-                <SpotlightCard className="glass h-full p-6" tilt={6}>
-                  <div className="mb-5 flex items-center gap-3">
-                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-teal-400/15 text-teal-300">
-                      <group.icon className="h-5 w-5" />
-                    </span>
-                    <h3 className="font-display text-lg font-bold">{group.title}</h3>
-                  </div>
-                  <div className="space-y-3">
-                    {group.items.map((item) => (
-                      <div key={item} className="group/skill flex items-center gap-2.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-teal-400 transition-transform group-hover/skill:scale-150" />
-                        <span className="text-sm text-muted-foreground transition-colors group-hover/skill:text-foreground">
-                          {item}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </SpotlightCard>
+          <Reveal stagger={0.08} className="mt-12 flex flex-col items-center gap-3 md:gap-4">
+            {TECH_PYRAMID.map((row, i) => (
+              <RevealItem key={i} className="flex flex-wrap justify-center gap-3 md:gap-4">
+                {row.map((t) => (
+                  <PyramidTile key={t.name} tech={t} />
+                ))}
               </RevealItem>
             ))}
           </Reveal>
@@ -1074,6 +1117,27 @@ export default function Home() {
 }
 
 /* ----------------------------- Shared bits ----------------------------- */
+
+function PyramidTile({ tech }: { tech: Tech }) {
+  return (
+    <div
+      title={tech.name}
+      className="group/tech flex w-20 flex-col items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-2 py-4 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-white/[0.06] hover:shadow-[0_14px_34px_-12px_rgba(45,212,191,0.55)] sm:w-24"
+    >
+      <img
+        src={`/tech/${tech.file}.svg`}
+        alt={tech.name}
+        loading="lazy"
+        className={`h-8 w-8 object-contain opacity-80 transition duration-300 [filter:brightness(0)_invert(1)] group-hover/tech:scale-110 group-hover/tech:opacity-100 ${
+          tech.light ? "" : "group-hover/tech:[filter:none]"
+        }`}
+      />
+      <span className="w-full truncate text-[11px] font-medium text-muted-foreground transition-colors group-hover/tech:text-foreground">
+        {tech.name}
+      </span>
+    </div>
+  );
+}
 
 function LocalClock() {
   const [now, setNow] = useState(() => new Date());
