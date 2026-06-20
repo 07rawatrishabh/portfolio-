@@ -219,6 +219,16 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    // Split heavy libs into long-cacheable vendor chunks (smaller initial JS).
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ["react", "react-dom"],
+          motion: ["framer-motion"],
+          lenis: ["lenis"],
+        },
+      },
+    },
   },
   server: {
     port: 3000,

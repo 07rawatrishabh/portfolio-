@@ -1,0 +1,16 @@
+{
+  "name": "Rishabh Rawat — Portfolio",
+  "short_name": "Rishabh Rawat",
+  "description": "Backend engineer and competitive programmer building scalable systems, computer-vision tools and clean APIs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05070d",
+  "theme_color": "#05070d",
+  "icons": [
+    {
+      "src": "https://d2xsxph8kpxj0f.cloudfront.net/310519663702615616/A88BqEDSowakdMQ7QrsFru/brand-logo-icmCBANSJyC4bCgzzugfzp.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -4,6 +4,8 @@ import {
   useScroll,
   useTransform,
   useReducedMotion,
+  useMotionValue,
+  useSpring,
   type Variants,
 } from "framer-motion";
 import {
@@ -38,6 +40,7 @@ import Intro from "@/components/fx/Intro";
 import SmoothScroll from "@/components/fx/SmoothScroll";
 import ScrambleText from "@/components/fx/ScrambleText";
 import VelocityMarquee from "@/components/fx/VelocityMarquee";
+import BackToTop from "@/components/fx/BackToTop";
 import { LeetCodeIcon, GfgIcon } from "@/components/icons";
 
 /* ----------------------------- Content ----------------------------- */
@@ -430,13 +433,57 @@ export default function Home() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "-22%"]);
 
+  // Hero: cursor-following glow + photo 3D tilt
+  const glowX = useMotionValue(50);
+  const glowY = useMotionValue(30);
+  const heroGlow = useTransform(
+    [glowX, glowY],
+    ([x, y]) => `radial-gradient(600px circle at ${x}% ${y}%, rgba(45,212,191,0.12), transparent 70%)`
+  );
+  const tiltX = useSpring(0, { stiffness: 120, damping: 12, mass: 0.4 });
+  const tiltY = useSpring(0, { stiffness: 120, damping: 12, mass: 0.4 });
+
+  const onHeroMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (reduce) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    glowX.set(x * 100);
+    glowY.set(y * 100);
+    tiltY.set((x - 0.5) * 16);
+    tiltX.set((0.5 - y) * 16);
+  };
+  const onHeroLeave = () => {
+    tiltX.set(0);
+    tiltY.set(0);
+  };
+
+  // Journey: timeline line that draws as you scroll through it
+  const journeyRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: journeyProgress } = useScroll({
+    target: journeyRef,
+    offset: ["start 65%", "end 85%"],
+  });
+  const lineScale = useSpring(journeyProgress, {
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
   return (
     <div className="relative min-h-screen text-foreground">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-teal-400 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[#04130f]"
+      >
+        Skip to content
+      </a>
       <Intro />
       <SmoothScroll />
       <AnimatedBackground />
       <CustomCursor />
       <ScrollProgress />
+      <BackToTop />
 
       {/* ---------------- Navigation ---------------- */}
       <motion.nav
@@ -483,11 +530,26 @@ export default function Home() {
         </div>
       </motion.nav>
 
+      <main id="main">
+
       {/* ---------------- Hero ---------------- */}
-      <section id="top" ref={heroRef} className="relative px-4 pt-36 pb-24 md:pt-44">
+      <section
+        id="top"
+        ref={heroRef}
+        onMouseMove={onHeroMove}
+        onMouseLeave={onHeroLeave}
+        className="relative px-4 pt-36 pb-24 md:pt-44"
+      >
+        {!reduce && (
+          <motion.div
+            aria-hidden
+            style={{ background: heroGlow }}
+            className="pointer-events-none absolute inset-0"
+          />
+        )}
         <motion.div
           style={reduce ? undefined : { y: heroY, opacity: heroOpacity }}
-          className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-5"
+          className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-5"
         >
           {/* Left */}
           <div className="md:col-span-3">
@@ -601,7 +663,12 @@ export default function Home() {
             transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="relative order-first mx-auto md:order-none md:col-span-2"
           >
-            <div className="relative mx-auto aspect-square w-52 sm:w-64 md:w-72 lg:w-80">
+            <motion.div
+              style={
+                reduce ? undefined : { rotateX: tiltX, rotateY: tiltY, transformPerspective: 900 }
+              }
+              className="relative mx-auto aspect-square w-52 sm:w-64 md:w-72 lg:w-80"
+            >
               {/* glow */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-teal-400/40 to-orange-400/30 blur-3xl" />
               {/* rotating dashed ring */}
@@ -643,7 +710,7 @@ export default function Home() {
                 <MapPin className="h-3.5 w-3.5 text-orange-300" />
                 Ahmedabad, India
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
 
@@ -664,11 +731,18 @@ export default function Home() {
         <Reveal stagger={0.12} className="mx-auto grid max-w-5xl grid-cols-2 gap-4 md:grid-cols-4">
           {STATS.map((s) => (
             <RevealItem key={s.label}>
-              <div className="glass rounded-2xl px-4 py-6 text-center">
+              <div className="glass group rounded-2xl px-4 py-6 text-center transition-colors hover:border-teal-400/30">
                 <div className="font-display text-3xl font-bold gradient-text-static md:text-4xl">
                   {"text" in s ? s.text : <Counter to={s.value} suffix={s.suffix} />}
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground md:text-sm">{s.label}</div>
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+                  className="mx-auto mt-3 h-0.5 w-10 origin-center rounded-full bg-gradient-to-r from-teal-400 to-orange-400 opacity-70"
+                />
               </div>
             </RevealItem>
           ))}
@@ -828,9 +902,13 @@ export default function Home() {
             </p>
           </Reveal>
 
-          <div className="relative mt-12">
-            {/* timeline line */}
-            <div className="absolute left-[19px] top-3 bottom-3 hidden w-px bg-gradient-to-b from-cyan-400/50 via-teal-400/40 to-transparent md:block" />
+          <div className="relative mt-12" ref={journeyRef}>
+            {/* timeline track + scroll-drawn line */}
+            <div className="absolute left-[19px] top-3 bottom-3 hidden w-px bg-white/10 md:block" />
+            <motion.div
+              style={reduce ? undefined : { scaleY: lineScale }}
+              className="absolute left-[19px] top-3 bottom-3 hidden w-px origin-top bg-gradient-to-b from-cyan-400 via-teal-400 to-orange-400 md:block"
+            />
             <div className="space-y-6">
               {JOURNEY.map((e, idx) => {
                 const accent = JOURNEY_ACCENT[e.kind];
@@ -841,12 +919,16 @@ export default function Home() {
                     delay={Math.min(idx, 4) * 0.04}
                     className="relative md:pl-16"
                   >
-                    {/* timeline node (desktop) */}
-                    <span
-                      className={`absolute left-0 top-1 hidden h-10 w-10 place-items-center rounded-full border bg-background md:grid ${accent.node}`}
+                    {/* timeline node (desktop) — pops as it scrolls in */}
+                    <motion.span
+                      initial={{ scale: 0.4, opacity: 0.3 }}
+                      whileInView={{ scale: 1, opacity: 1 }}
+                      viewport={{ once: true, amount: 0.8 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 16 }}
+                      className={`absolute left-0 top-1 hidden h-10 w-10 place-items-center rounded-full border bg-background shadow-[0_0_0_5px_rgba(45,212,191,0.07)] md:grid ${accent.node}`}
                     >
                       <e.icon className="h-5 w-5" />
-                    </span>
+                    </motion.span>
 
                     <SpotlightCard className="glass p-6 md:p-7" tilt={5}>
                       <div className="flex items-start justify-between gap-4">
@@ -985,12 +1067,16 @@ export default function Home() {
               <RevealItem key={project.title}>
                 <SpotlightCard className="glass h-full overflow-hidden" data-cursor="Open">
                   {/* Generative cover */}
-                  <div
-                    className="relative h-36 overflow-hidden"
-                    style={{ background: PROJECT_COVERS[idx % PROJECT_COVERS.length] }}
-                  >
-                    <div className="grid-bg absolute inset-0 opacity-40" />
+                  <div className="relative h-36 overflow-hidden">
+                    <div
+                      className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110"
+                      style={{ background: PROJECT_COVERS[idx % PROJECT_COVERS.length] }}
+                    >
+                      <div className="grid-bg absolute inset-0 opacity-40" />
+                    </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e16] to-transparent" />
+                    {/* sheen sweep on hover */}
+                    <div className="pointer-events-none absolute inset-0 -translate-x-full -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
                     <span className="absolute left-5 top-3 font-display text-7xl font-extrabold text-white/10">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
@@ -1144,6 +1230,8 @@ export default function Home() {
         </Reveal>
       </section>
 
+      </main>
+
       {/* ---------------- Footer ---------------- */}
       <footer className="border-t border-white/10 px-4 py-10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-muted-foreground md:flex-row">
@@ -1222,7 +1310,13 @@ function SectionHeading({ kicker, title }: { kicker: string; title: string }) {
       <h2 className="mt-3 font-display text-4xl font-extrabold tracking-tight md:text-5xl">
         <ScrambleText text={title} />
       </h2>
-      <div className="mt-4 h-1 w-20 rounded-full bg-gradient-to-r from-teal-400 to-orange-400" />
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+        className="mt-4 h-1 w-20 origin-left rounded-full bg-gradient-to-r from-teal-400 to-orange-400"
+      />
     </Reveal>
   );
 }
