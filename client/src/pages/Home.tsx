@@ -149,6 +149,19 @@ const TECH_PYRAMID: Tech[][] = [
   ],
 ];
 
+/** Same logos re-chunked into a narrower funnel that fits small screens. */
+function chunkByCounts<T>(arr: T[], counts: number[]): T[][] {
+  const out: T[][] = [];
+  let i = 0;
+  for (const c of counts) {
+    out.push(arr.slice(i, i + c));
+    i += c;
+  }
+  if (i < arr.length) out.push(arr.slice(i));
+  return out;
+}
+const MOBILE_PYRAMID = chunkByCounts(TECH_PYRAMID.flat(), [4, 4, 4, 3, 3, 2, 2]);
+
 type JourneyKind = "education" | "defense" | "work";
 
 interface JourneyEntry {
@@ -684,6 +697,73 @@ export default function Home() {
         </Marquee>
       </section>
 
+      {/* ---------------- Competitive Programming ---------------- */}
+      <section className="px-4 pt-12 pb-4">
+        <div className="mx-auto max-w-6xl">
+          <Reveal>
+            <SpotlightCard className="glass p-6 md:p-8" tilt={4}>
+              <div className="grid items-center gap-8 md:grid-cols-2">
+                {/* Copy */}
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-teal-300/80">
+                    Competitive Programming
+                  </p>
+                  <h3 className="mt-3 font-display text-2xl font-bold md:text-3xl">
+                    800+ problems, and counting
+                  </h3>
+                  <p className="mt-3 text-muted-foreground">
+                    DSA is my daily warm-up. I solve consistently across LeetCode,
+                    GeeksforGeeks, CodeChef and Codeforces — it's where I keep my
+                    problem-solving sharp and my fundamentals honest.
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Magnetic>
+                      <a
+                        href="https://leetcode.com/u/rawatrishabh/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-cursor="Visit"
+                      >
+                        <span className="shine inline-flex items-center gap-2 rounded-full bg-teal-400 px-5 py-2.5 text-sm font-semibold text-[#04130f] transition-colors hover:bg-teal-300">
+                          <LeetCodeIcon className="h-4 w-4" />
+                          View LeetCode profile
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        </span>
+                      </a>
+                    </Magnetic>
+                    <a
+                      href="https://www.geeksforgeeks.org/profile/rawat_rishabh"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-cursor="Visit"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-muted-foreground transition-colors hover:border-teal-400/40 hover:text-foreground"
+                    >
+                      <GfgIcon className="h-4 w-4" />
+                      GeeksforGeeks
+                    </a>
+                  </div>
+                </div>
+
+                {/* Stats screenshot */}
+                <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0a0e16]">
+                  <img
+                    src="/leetcode.png"
+                    alt="Rishabh Rawat — LeetCode profile stats"
+                    loading="lazy"
+                    className="w-full"
+                  />
+                  <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10" />
+                  <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-[#0a0e16]/85 px-3 py-1 text-xs font-medium text-amber-200 backdrop-blur">
+                    <LeetCodeIcon className="h-3.5 w-3.5" />
+                    @rawatrishabh
+                  </span>
+                </div>
+              </div>
+            </SpotlightCard>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ---------------- About ---------------- */}
       <section id="about" className="px-4 py-24">
         <div className="mx-auto max-w-5xl">
@@ -952,14 +1032,28 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <SectionHeading kicker="04 — Toolkit" title="Skills & technologies" />
 
-          <Reveal stagger={0.08} className="mt-12 flex flex-col items-center gap-3 md:gap-4">
-            {TECH_PYRAMID.map((row, i) => (
-              <RevealItem key={i} className="flex flex-wrap justify-center gap-3 md:gap-4">
-                {row.map((t) => (
-                  <PyramidTile key={t.name} tech={t} />
-                ))}
-              </RevealItem>
-            ))}
+          <Reveal className="mt-12">
+            {/* Mobile: narrower funnel that fits the screen — full-color icons (no hover) */}
+            <div className="flex flex-col items-center gap-2 sm:hidden">
+              {MOBILE_PYRAMID.map((row, i) => (
+                <div key={i} className="flex justify-center gap-2">
+                  {row.map((t) => (
+                    <PyramidTile key={t.name} tech={t} />
+                  ))}
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop: wide pyramid (rows stay single-line) */}
+            <div className="hidden flex-col items-center gap-4 sm:flex">
+              {TECH_PYRAMID.map((row, i) => (
+                <div key={i} className="flex justify-center gap-3 md:gap-4">
+                  {row.map((t) => (
+                    <PyramidTile key={t.name} tech={t} />
+                  ))}
+                </div>
+              ))}
+            </div>
           </Reveal>
 
           {/* Achievements */}
@@ -979,68 +1073,6 @@ export default function Home() {
             ))}
           </Reveal>
 
-          {/* Competitive programming showcase */}
-          <Reveal className="mt-6">
-            <SpotlightCard className="glass p-6 md:p-8" tilt={4}>
-              <div className="grid items-center gap-8 md:grid-cols-2">
-                {/* Copy */}
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-teal-300/80">
-                    Competitive Programming
-                  </p>
-                  <h3 className="mt-3 font-display text-2xl font-bold md:text-3xl">
-                    800+ problems, and counting
-                  </h3>
-                  <p className="mt-3 text-muted-foreground">
-                    DSA is my daily warm-up. I solve consistently across LeetCode,
-                    GeeksforGeeks, CodeChef and Codeforces — it's where I keep my
-                    problem-solving sharp and my fundamentals honest.
-                  </p>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <Magnetic>
-                      <a
-                        href="https://leetcode.com/u/rawatrishabh/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-cursor="Visit"
-                      >
-                        <span className="shine inline-flex items-center gap-2 rounded-full bg-teal-400 px-5 py-2.5 text-sm font-semibold text-[#04130f] transition-colors hover:bg-teal-300">
-                          <LeetCodeIcon className="h-4 w-4" />
-                          View LeetCode profile
-                          <ArrowUpRight className="h-3.5 w-3.5" />
-                        </span>
-                      </a>
-                    </Magnetic>
-                    <a
-                      href="https://www.geeksforgeeks.org/profile/rawat_rishabh"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-cursor="Visit"
-                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm text-muted-foreground transition-colors hover:border-teal-400/40 hover:text-foreground"
-                    >
-                      <GfgIcon className="h-4 w-4" />
-                      GeeksforGeeks
-                    </a>
-                  </div>
-                </div>
-
-                {/* Stats screenshot */}
-                <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0a0e16]">
-                  <img
-                    src="/leetcode.png"
-                    alt="Rishabh Rawat — LeetCode profile stats"
-                    loading="lazy"
-                    className="w-full"
-                  />
-                  <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10" />
-                  <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-[#0a0e16]/85 px-3 py-1 text-xs font-medium text-amber-200 backdrop-blur">
-                    <LeetCodeIcon className="h-3.5 w-3.5" />
-                    @rawatrishabh
-                  </span>
-                </div>
-              </div>
-            </SpotlightCard>
-          </Reveal>
         </div>
       </section>
 
@@ -1122,17 +1154,19 @@ function PyramidTile({ tech }: { tech: Tech }) {
   return (
     <div
       title={tech.name}
-      className="group/tech flex w-20 flex-col items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-2 py-4 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-white/[0.06] hover:shadow-[0_14px_34px_-12px_rgba(45,212,191,0.55)] sm:w-24"
+      className="group/tech flex w-[20vw] max-w-24 flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-1.5 py-3 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-white/[0.06] hover:shadow-[0_14px_34px_-12px_rgba(45,212,191,0.55)] sm:w-24 sm:gap-2.5 sm:px-2 sm:py-4"
     >
       <img
         src={`/tech/${tech.file}.svg`}
         alt={tech.name}
         loading="lazy"
-        className={`h-8 w-8 object-contain opacity-80 transition duration-300 [filter:brightness(0)_invert(1)] group-hover/tech:scale-110 group-hover/tech:opacity-100 ${
-          tech.light ? "" : "group-hover/tech:[filter:none]"
+        className={`h-7 w-7 object-contain transition duration-300 group-hover/tech:scale-110 sm:h-8 sm:w-8 ${
+          tech.light
+            ? "opacity-90 [filter:brightness(0)_invert(1)]"
+            : "opacity-100 sm:opacity-80 sm:[filter:brightness(0)_invert(1)] sm:group-hover/tech:opacity-100 sm:group-hover/tech:[filter:none]"
         }`}
       />
-      <span className="w-full truncate text-[11px] font-medium text-muted-foreground transition-colors group-hover/tech:text-foreground">
+      <span className="w-full truncate text-[10px] font-medium text-muted-foreground transition-colors group-hover/tech:text-foreground sm:text-[11px]">
         {tech.name}
       </span>
     </div>
