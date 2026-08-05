@@ -26,6 +26,8 @@ import {
   GraduationCap,
   ShieldCheck,
   ChevronDown,
+  FileText,
+  Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AnimatedBackground from "@/components/fx/AnimatedBackground";
@@ -181,6 +183,9 @@ interface JourneyEntry {
   imageCaption?: string;
   link?: string;
   current?: boolean;
+  docImage?: string;
+  docPdf?: string;
+  docTitle?: string;
 }
 
 const JOURNEY: JourneyEntry[] = [
@@ -233,70 +238,65 @@ const JOURNEY: JourneyEntry[] = [
     image: "/zangoh.png",
     imageCaption: "Backend Intern",
     link: "https://zangoh.com/",
-  },
-  {
-    kind: "work",
-    icon: Briefcase,
-    title: "Walkover",
-    subtitle: "Software Developer",
-    period: "6 months",
-    location: "Indore",
-    description:
-      "Built and shipped features across backend services and web applications, working closely with the team on day-to-day product development.",
-    highlights: ["Backend", "Web Development", "Collaboration"],
-    image: "/walkover.png",
-    imageCaption: "Software Developer",
-    link: "https://walkover.in/",
+    docImage: "/zangoh_certificate_preview.png",
+    docPdf: "/zangoh_internship_certificate.pdf",
+    docTitle: "Internship Completion Certificate",
   },
   {
     kind: "work",
     icon: Briefcase,
     title: "Trusttags",
     subtitle: "Software Developer",
-    period: "Jun 2025 – Present · ~1 yr",
+    period: "Jun 2025 – Jul 2026 · 1 yr 1 mo",
     location: "Ahmedabad",
     description:
-      "Building a scalable Distributor Management System with territory-based pricing and a RAG-powered chatbot, plus computer-vision tooling for industrial inspection.",
+      "Built a scalable Distributor Management System with territory-based pricing and a RAG-powered chatbot, plus computer-vision tooling for industrial inspection.",
     highlights: ["DMS Development", "Table Partitioning", "RAG Chatbot", "Computer Vision"],
     image: "/trusttags.png",
-    imageCaption: "Current role",
+    imageCaption: "Software Developer",
     link: "https://www.trusttags.in/",
-    current: true,
+    docImage: "/trusttags_experience_preview.png",
+    docPdf: "/trusttags_experience_letter.pdf",
+    docTitle: "Experience Letter",
   },
 ];
 
 const PROJECTS = [
   {
-    title: "Campus Connect",
+    title: "LoadBalancer RUST",
+    tag: "Systems",
+    description:
+      "A high-performance, enterprise-grade HTTP Reverse Proxy Load Balancer & Traffic Manager implemented in Rust with circuit breaking, rate limiting, and health checks.",
+    technologies: ["Rust", "Tokio", "HTTP Proxy", "Circuit Breaker", "Rate Limiting"],
+    highlights: ["High Performance", "Reverse Proxy", "Traffic Management"],
+    github: "https://github.com/07rawatrishabh/LoadBalancer-RUST",
+  },
+  {
+    title: "Quality Management System",
+    tag: "Enterprise",
+    description:
+      "An end-to-end Enterprise Quality Management System (QMS) for tracking product quality, audits, non-conformances, and corrective actions at scale.",
+    technologies: ["Angular", "Node.js", "PostgreSQL", "REST APIs"],
+    highlights: ["Audit Tracking", "Non-Conformance Mgmt", "Enterprise Scale"],
+    github: "https://github.com/07rawatrishabh/Quality-Management-System",
+  },
+  {
+    title: "Seamless Video Call",
     tag: "Realtime",
     description:
-      "Real-time virtual classroom with WebRTC peer-to-peer video/audio and an integrated ChatGPT assistant.",
-    technologies: ["Node.js", "React", "WebRTC", "MongoDB", "ChatGPT API"],
-    highlights: ["Video/Audio Streaming", "Real-time Chat", "AI Integration"],
+      "Real-time peer-to-peer video calling application with seamless WebRTC connections, AI-powered call analytics, and low-latency audio/video streaming.",
+    technologies: ["WebRTC", "Node.js", "Socket.io", "React", "AI Analytics"],
+    highlights: ["P2P Video", "Low Latency", "AI Call Analytics"],
+    github: "https://github.com/07rawatrishabh/seamless-videocall",
   },
   {
-    title: "Distributor Management System",
-    tag: "Scale",
-    description:
-      "Scalable DMS for territory-based pricing and order management, tuned with partitioning for heavy query loads.",
-    technologies: ["Backend Systems", "DB Optimization", "Table Partitioning"],
-    highlights: ["Scalability", "Performance Tuning", "Complex Queries"],
-  },
-  {
-    title: "Vision Inspection Module",
-    tag: "Computer Vision",
-    description:
-      "Bulk 2D inspection system that decodes multiple DataMatrix codes from a single high-resolution image.",
-    technologies: ["OpenCV", "Computer Vision", "Python"],
-    highlights: ["Image Processing", "Pattern Recognition", "Accuracy Tuning"],
-  },
-  {
-    title: "E-Commerce Platform",
+    title: "KiranaCart",
     tag: "Full-Stack",
     description:
-      "Full-stack commerce app with browsing, cart, checkout, email notifications and RESTful APIs.",
-    technologies: ["Node.js", "React", "Express", "MongoDB", "Nodemailer"],
-    highlights: ["RESTful APIs", "Email Notifications", "Responsive UI"],
+      "A full-stack e-commerce frontend for local kirana stores — enabling product browsing, cart management, order placement, and a smooth checkout experience.",
+    technologies: ["React", "JavaScript", "REST APIs", "Responsive UI"],
+    highlights: ["E-Commerce", "Responsive Design", "Cart & Checkout"],
+    github: "https://github.com/07rawatrishabh/KiranaCartF",
   },
 ];
 
@@ -853,7 +853,7 @@ export default function Home() {
                   <span className="text-foreground">boring to use in the best way</span>.
                 </p>
                 <p>
-                  Right now I'm building a Distributor Management System at{" "}
+                  Most recently, I built a Distributor Management System at{" "}
                   <span className="text-teal-300">Trusttags</span> — working through
                   territory-based pricing, table partitioning for scale, and a
                   RAG-based assistant, with the occasional detour into computer vision.
@@ -1048,6 +1048,51 @@ export default function Home() {
                           ))}
                         </div>
                       )}
+
+                      {/* PDF Document Preview Card */}
+                      {e.docImage && (
+                        <div className="mt-5 space-y-2">
+                          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                            <span className="flex items-center gap-1.5 font-mono text-teal-300">
+                              <FileText className="h-4 w-4" />
+                              {e.docTitle || "Official Document"}
+                            </span>
+                            <a
+                              href={e.docPdf}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-xs text-teal-300 hover:text-teal-200 transition-colors"
+                            >
+                              <span>View PDF</span>
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          </div>
+
+                          <a
+                            href={e.docPdf}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative block overflow-hidden rounded-xl border border-white/10 bg-[#0a0e16] shadow-lg transition-all duration-300 hover:border-teal-400/50 hover:shadow-teal-500/10"
+                          >
+                            <img
+                              src={e.docImage}
+                              alt={`${e.title} document preview`}
+                              loading="lazy"
+                              className="w-full max-h-[360px] object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e16] via-transparent to-transparent opacity-80" />
+                            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                              <span className="rounded-full bg-[#0a0e16]/90 px-3 py-1 text-xs font-medium text-white backdrop-blur border border-white/10 flex items-center gap-1.5">
+                                <Eye className="h-3.5 w-3.5 text-teal-400" />
+                                Click to inspect document
+                              </span>
+                              <span className="rounded-full bg-teal-500/20 px-2.5 py-1 text-xs font-semibold text-teal-300 border border-teal-500/30">
+                                PDF Document
+                              </span>
+                            </div>
+                          </a>
+                        </div>
+                      )}
                     </SpotlightCard>
                   </Reveal>
                 );
@@ -1065,6 +1110,12 @@ export default function Home() {
           <Reveal stagger={0.1} className="mt-12 grid gap-6 md:grid-cols-2">
             {PROJECTS.map((project, idx) => (
               <RevealItem key={project.title}>
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block h-full"
+                >
                 <SpotlightCard className="glass h-full overflow-hidden" data-cursor="Open">
                   {/* Generative cover */}
                   <div className="relative h-36 overflow-hidden">
@@ -1114,6 +1165,7 @@ export default function Home() {
                     </div>
                   </div>
                 </SpotlightCard>
+                </a>
               </RevealItem>
             ))}
           </Reveal>
