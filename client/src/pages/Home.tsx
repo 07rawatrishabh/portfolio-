@@ -31,7 +31,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AnimatedBackground from "@/components/fx/AnimatedBackground";
-import CustomCursor from "@/components/fx/CustomCursor";
 import ScrollProgress from "@/components/fx/ScrollProgress";
 import SpotlightCard from "@/components/fx/SpotlightCard";
 import Magnetic from "@/components/fx/Magnetic";
@@ -86,9 +85,9 @@ const STATS: Stat[] = [
 ];
 
 const FACTS = [
-  { icon: MapPin, label: "Based in", value: "Ahmedabad, India" },
-  { icon: Briefcase, label: "Currently", value: "Software Dev @ Trusttags" },
-  { icon: Cpu, label: "Focus", value: "Backend · Databases · CV" },
+  { icon: MapPin, label: "Based in", value: "Indore, India" },
+  { icon: Briefcase, label: "Joining", value: "System Engineer @ TCS" },
+  { icon: Cpu, label: "Focus", value: "Backend · Systems · CV" },
   { icon: Code2, label: "Also", value: "Competitive programming" },
 ];
 
@@ -258,6 +257,19 @@ const JOURNEY: JourneyEntry[] = [
     docImage: "/trusttags_experience_preview.png",
     docPdf: "/trusttags_experience_letter.pdf",
     docTitle: "Experience Letter",
+  },
+  {
+    kind: "work",
+    icon: Briefcase,
+    title: "Tata Consultancy Services (TCS)",
+    subtitle: "System Engineer",
+    period: "Joining / Upcoming",
+    location: "Indore",
+    description:
+      "Joining TCS as a System Engineer to build enterprise-scale software systems, high-throughput backend services, and resilient infrastructure.",
+    highlights: ["System Engineering", "Enterprise Scale", "Backend Infrastructure"],
+    imageCaption: "Upcoming Role",
+    current: true,
   },
 ];
 
@@ -481,7 +493,6 @@ export default function Home() {
       <Intro />
       <SmoothScroll />
       <AnimatedBackground />
-      <CustomCursor />
       <ScrollProgress />
       <BackToTop />
 
@@ -701,14 +712,14 @@ export default function Home() {
               {/* floating chips (hidden on the smallest screens to avoid overflow) */}
               <div className="absolute -left-6 top-10 hidden items-center gap-2 rounded-xl border border-white/10 bg-[#0a0e16]/80 px-3 py-2 text-xs font-medium backdrop-blur animate-bob sm:flex">
                 <Briefcase className="h-3.5 w-3.5 text-teal-300" />
-                Software Dev @ Trusttags
+                System Engineer @ TCS
               </div>
               <div
                 className="absolute -right-4 bottom-12 hidden items-center gap-2 rounded-xl border border-white/10 bg-[#0a0e16]/80 px-3 py-2 text-xs font-medium backdrop-blur animate-bob sm:flex"
                 style={{ animationDelay: "0.6s" }}
               >
                 <MapPin className="h-3.5 w-3.5 text-orange-300" />
-                Ahmedabad, India
+                Indore, India
               </div>
             </motion.div>
           </motion.div>
@@ -1246,7 +1257,7 @@ export default function Home() {
                   <span className="absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75 animate-pulse-ring" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-300" />
                 </span>
-                Available · Remote or Ahmedabad
+                Available · Remote or Indore
               </span>
               <h2 className="font-display text-4xl font-extrabold tracking-tight md:text-6xl">
                 Got a problem worth <span className="gradient-text">solving?</span>
@@ -1287,7 +1298,7 @@ export default function Home() {
       {/* ---------------- Footer ---------------- */}
       <footer className="border-t border-white/10 px-4 py-10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-muted-foreground md:flex-row">
-          <p>© {new Date().getFullYear()} Rishabh Rawat · Designed & built in Ahmedabad, India.</p>
+          <p>© {new Date().getFullYear()} Rishabh Rawat · Designed & built in Indore, India.</p>
           <LocalClock />
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             {SOCIALS.map((s) => (
@@ -1350,7 +1361,7 @@ function LocalClock() {
   return (
     <span className="flex items-center gap-2 font-mono text-xs">
       <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.8)]" />
-      {time} IST · Ahmedabad
+      {time} IST · Indore
     </span>
   );
 }

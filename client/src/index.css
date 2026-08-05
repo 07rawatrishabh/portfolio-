@@ -185,13 +185,6 @@
     @apply cursor-pointer;
   }
 
-  /* Hide the native cursor only on devices with a precise pointer (custom cursor takes over) */
-  @media (pointer: fine) {
-    .custom-cursor-active,
-    .custom-cursor-active * {
-      cursor: none;
-    }
-  }
 }
 
 @layer components {
